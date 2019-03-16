@@ -1,6 +1,6 @@
 <?php
 require '../vendor/autoload.php';
-$con = new mysqli("localhost","heshan", "Heshan@666",  "odi_live_score");
+$con = new mysqli("localhost","heshan", "pwd",  "odi_live_score");
 
 $app = new \Slim\App([
     'settings' => [
@@ -39,7 +39,7 @@ $app->post('/update-score', function ($request, $response, $args) {
     $con->query("UPDATE score SET runs = '$score', wickets = '$wickets', overs = '$overs' WHERE team = '$team'");
     $con->query("UPDATE match_status SET description = '$description' WHERE id = 1");
 
-    return $response->withStatus(201)->withJson();
+    return $response->withStatus(201)->withJson(["id"=>$con->insert_id]);
 });
 
 //get-score

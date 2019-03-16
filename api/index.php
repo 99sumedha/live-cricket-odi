@@ -7,6 +7,19 @@ $app = new \Slim\App([
         'displayErrorDetails' => true
     ]
 ]);
+
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', 'http://sack.lk')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET');
+});
+
 // login
 
 $app->post('/login', function ($request, $response, $args) {
@@ -62,6 +75,10 @@ $app->get('/get-description', function ($request, $response, $args){
     return $response->withStatus(200)->withJson($des);
 
 });
+$app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/{routes:.+}', function($req, $res) {
+    $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
+    return $handler($req, $res);
+});
 try {
     $app->run();
 } catch (\Slim\Exception\MethodNotAllowedException $e) {
@@ -69,4 +86,6 @@ try {
 } catch (Exception $e) {
     echo 'error';
 }
+
+
 
